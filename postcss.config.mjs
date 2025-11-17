@@ -5,3 +5,11 @@ const config = {
 };
 
 export default config;
+/*export default {
+  plugins: {
+    "postcss-import": {},
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};
+*/ 
