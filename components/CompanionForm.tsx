@@ -25,7 +25,9 @@ import {
     FormDescription,
 
     } from "@/components/ui/form"
-
+import { createCompanion } from "@/lib/actions/companion.actions"
+//import { redirect } from "next/dist/server/api-utils"
+import { redirect } from "next/navigation"
 
 const formSchema = z.object({
             name: z.string().min(1, { message: "name is required" }),
@@ -56,11 +58,20 @@ const CompanionForm = () => {
     }
   })
  
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     // Do something with the form values.
-    console.log(values)
+    //console.log(values);
+    
+    const companion = await createCompanion(values); /**coming from server lib action */
+    if (companion) {
+       redirect(`/companions/${companion.id}`)                                                           /*redirect(url:/companion..) */
+    }
+  else {
+    console.log("Failed to create companion");                                                           /*message:'Failed... */
   }
- 
+  console.log(companion);
+ }
+
   return (
     <Form {...form}>
   <form onSubmit={form.handleSubmit(onSubmit)}>
