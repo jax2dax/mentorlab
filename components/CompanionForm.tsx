@@ -56,21 +56,24 @@ const CompanionForm = () => {
         style: "",
         duration:15
     }
-  })
+  });
+
  
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // Do something with the form values.
+    /* when this form submitted, it creates an id(actual companion id in db), then , it redirects to that companions page, which is then 
+    passed through params as props (in app>companions/[id]) then , using that comp ID, getCompanion function is called(from lib>actions)
+    that matches The id from props(one created in this form) to the- Id in the db? */
     //console.log(values);
     
     const companion = await createCompanion(values); /**coming from server lib action */
     if (companion) {
        redirect(`/companions/${companion.id}`)                                                           /*redirect(url:/companion..) */
     }
-  else {
-    console.log("Failed to create companion");                                                           /*message:'Failed... */
-  }
-  console.log(companion);
- }
+    else {
+        console.log("Failed to create companion");                                                           /*message:'Failed... */
+    }
+    console.log(companion);
+    }
 
   return (
     <Form {...form}>

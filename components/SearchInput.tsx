@@ -33,7 +33,7 @@ const SearchInput = () => {
                     router.push(newUrl, { scroll: false });
                 }
             }
-        }, 600)
+        }, 600)          /* update the search result(make a call) every 0.6 sec */
     }, [searchQuery,  pathname]);   /**removed router, searchParams */
 
     return (
