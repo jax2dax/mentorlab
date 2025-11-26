@@ -19,11 +19,16 @@ const CompanionSession = async ({ params }: CompanionSessionPageProps) => {
     const companion = await getCompanion(id);                    /*get the companion details,(from lib>actions) */
     const user = await currentUser();                            /*get the current user(auth from clerk) */
 
-    const { name, subject, title, topic, duration } = companion;
+    
     console.log(companion);
 
     if(!user) redirect('/sign-in');         /*force signin, if none */
-    if(!name) redirect('/companions')       /*force companion create, if none  */
+    //if(!name) redirect('/companions');       /*force companion create, if none  */
+    if(!companion) redirect('/companions');  /*force companion create, if none  */
+    const { name, subject, title, topic, duration } = companion;
+
+
+    
 
     return (
         <main>

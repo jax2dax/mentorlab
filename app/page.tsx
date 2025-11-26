@@ -35,7 +35,7 @@ const Page = () => {
       <section className='home-section'>
         <CompanionsList title="Recently Completed sessions"
         companions={recentSessions}
-        classNames="w-2/3 max-lg:w-ful"
+        classNames="w-3/3 max-lg:w-ful"
         />
         
         <CTA />
