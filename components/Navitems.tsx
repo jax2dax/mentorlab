@@ -17,7 +17,7 @@ const NavItems = () => {
         {
             navItems.map(({label, href})=>(
                 <Link href={href} key={label}className={
-                    cn(pathname === href && 'text-primary font-semibold')
+                    cn(pathname === href && 'text-primary font-semibold nav-active-glow')
                 }
                 >{label}</Link>
             ))

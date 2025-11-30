@@ -39,7 +39,7 @@ const SubjectFilter = () => {
     return (
         <Select onValueChange={setSubject} value={subject}>
             <SelectTrigger className="input capitalize">
-                <SelectValue placeholder="Subject" />
+                <SelectValue placeholder="Subject" className="bg-blend-color-dodge color-grey" style={{color:"grey"}}/>
             </SelectTrigger>
             <SelectContent>
                 <SelectItem value="all">All subjects</SelectItem>

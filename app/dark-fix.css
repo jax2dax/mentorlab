@@ -1,0 +1,62 @@
+/* Fixes white backgrounds that ignore dark mode */
+.dark .navbar,
+.dark .companion-list,
+.dark .companion-card {
+  background-color: var(--card) !important;
+  color: var(--card-foreground) !important;
+}
+
+/* Fix forced-black borders that stay black in dark mode */
+.dark .companion-card,
+.dark .navbar,
+.dark .companion-list {
+  border-color: var(--border) !important;
+}
+
+/* Fix text that is always black */
+.dark .subject-badge {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.dark .btn-primary {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.dark .btn-signin {
+  border-color: var(--border) !important;
+  color: var(--foreground) !important;
+}
+/**********input darkmode fix**********/
+
+/* Fixes white backgrounds that ignore dark mode */
+.dark .navbar,
+.dark .companion-list,
+.dark .companion-card {
+  background-color: var(--card) !important;
+  color: var(--card-foreground) !important;
+}
+
+/* Fix forced-black borders that stay black in dark mode */
+.dark .companion-card,
+.dark .navbar,
+.dark .companion-list {
+  border-color: var(--border) !important;
+}
+
+/* Fix text that is always black */
+.dark .subject-badge {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.dark .btn-primary {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.dark .btn-signin {
+  border-color: var(--border) !important;
+  color: var(--foreground) !important;
+}

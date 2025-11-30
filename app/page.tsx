@@ -4,6 +4,8 @@ import CompanionCard from '@/components/CompanionCard'
 import CompanionsList from '@/components/CompanionsList'
 import CTA from '@/components/CTA'
 import { recentSessions } from '@/constants'
+import ThemeToggle from '@/components/darkMode'
+
 const Page = () => {
   return (
     <main>
@@ -40,7 +42,9 @@ const Page = () => {
         
         <CTA />
       </section>
+      
       <Button>task</Button>
+      
 
     </main>
   )
