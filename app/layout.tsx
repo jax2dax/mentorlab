@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="google-site-verification" content="fijlxhgxBZmHouzyiGo4NwfsBWsrWr_c9QcOHGeftoo" />
-        
+
       </head>
       
       <body className={`${bricolage.variable} antialiased`}>
@@ -32,6 +32,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         </ClerkProvider>
+
         </body>
     </html>
   );
