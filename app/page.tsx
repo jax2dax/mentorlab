@@ -9,6 +9,7 @@ import ThemeToggle from '@/components/darkMode'
 const Page = () => {
   return (
     <main>
+      
       <h1 className="text-2xl underline">Popular Companions</h1>
       <section className="home-section">
         <CompanionCard
