@@ -111,6 +111,88 @@ export const getUserSessions = async (userId: string, limit = 10) => {
     return data.map(({ companions }) => companions);
 }
 
+export const getUserStats = async (userId: string) => {
+    const supabase = createSupabaseClient();
+    const { data, error } = await supabase
+        .from('session_history')
+        .select(`created_at, companions:companion_id (subject, duration)`)
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+    if(error) throw new Error(error.message);
+
+    const sessions = data as unknown as {
+        created_at: string;
+        companions: { subject: string; duration: number } | null;
+    }[];
+
+    const toDayKey = (d: Date) => d.toISOString().split('T')[0];
+
+    const totalSessions = sessions.length;
+    const totalMinutes = sessions.reduce((sum, s) => sum + Number(s.companions?.duration ?? 0), 0);
+
+    const subjectCounts: Record<string, number> = {};
+    const dayCounts: Record<string, number> = {};
+
+    sessions.forEach((s) => {
+        const subject = s.companions?.subject;
+        if(subject) subjectCounts[subject] = (subjectCounts[subject] ?? 0) + 1;
+
+        const dayKey = toDayKey(new Date(s.created_at));
+        dayCounts[dayKey] = (dayCounts[dayKey] ?? 0) + 1;
+    });
+
+    const subjectBreakdown = Object.entries(subjectCounts)
+        .map(([subject, count]) => ({ subject, count }))
+        .sort((a, b) => b.count - a.count);
+
+    const activity: { date: string; count: number }[] = [];
+    for (let i = 13; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const key = toDayKey(d);
+        activity.push({ date: key, count: dayCounts[key] ?? 0 });
+    }
+
+    let streak = 0;
+    const cursor = new Date();
+    if(!dayCounts[toDayKey(cursor)]) cursor.setDate(cursor.getDate() - 1);
+    while (dayCounts[toDayKey(cursor)]) {
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+    }
+
+    return { totalSessions, totalMinutes, subjectBreakdown, activity, streak };
+}
+
+export const getFeaturedCompanions = async (limit = 3) => {
+    const supabase = createSupabaseClient();
+    const { data: companions, error } = await supabase
+        .from('companions')
+        .select()
+        .eq('is_featured', true)
+        .order('play_count', { ascending: false })
+        .limit(limit);
+
+    if(error) throw new Error(error.message);
+
+    return companions;
+}
+
+export const getRecommendedCompanions = async (limit = 6) => {
+    const supabase = createSupabaseClient();
+    const { data: companions, error } = await supabase
+        .from('companions')
+        .select()
+        .eq('is_recommended', true)
+        .order('rating', { ascending: false })
+        .limit(limit);
+
+    if(error) throw new Error(error.message);
+
+    return companions;
+}
+
 export const getUserCompanions = async (userId: string) => {
     const supabase = createSupabaseClient();
     const { data, error } = await supabase

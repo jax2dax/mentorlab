@@ -35,6 +35,23 @@ interface CreateCompanion {
   duration: number;
 }
 
+interface CompanionRow {
+  id: string;
+  name: string;
+  subject: string;
+  topic: string;
+  voice: string;
+  style: string;
+  duration: number;
+  author: string;
+  is_featured: boolean;
+  is_recommended: boolean;
+  rating: number | null;
+  recommendation_note: string | null;
+  play_count: number;
+  created_at: string;
+}
+
 interface GetAllCompanions {
   limit?: number;
   page?: number;

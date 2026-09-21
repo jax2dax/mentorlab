@@ -1,36 +1,37 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
-import {getUserCompanions} from "@/lib/actions/companion.actions";
 import Image from "next/image";
-import {getUserSessions} from "@/lib/actions/companion.actions";
+import {
+  getUserCompanions,
+  getUserSessions,
+  getUserStats,
+} from "@/lib/actions/companion.actions";
+import CompanionCard from "@/components/CompanionCard";
 import CompanionsList from "@/components/CompanionsList";
-//import {getBookmarkedCompanions} from "@/lib/actions/companion.actions";
-
+import { ActivityChart, SubjectChart } from "@/components/JourneyCharts";
+import { getSubjectColor } from "@/lib/utils";
 
 const Profile = async () => {
   const user = await currentUser();
 
   if (!user) redirect("/sign-in");
 
-  const companions = await getUserCompanions(user.id);
-  const sessionHistory = await getUserSessions(user.id);
- // const bookmarkedCompanions = await getBookmarkedCompanions(user.id);
+  const [companions, sessionHistory, stats] = await Promise.all([
+    getUserCompanions(user.id),
+    getUserSessions(user.id),
+    getUserStats(user.id),
+  ]);
 
   return (
-    <main className="min-lg:w-3/4">
+    <main className="flex flex-col gap-8">
       <section className="flex justify-between gap-4 max-sm:flex-col items-center">
         <div className="flex gap-4 items-center">
           <Image
             src={user.imageUrl}
             alt={user.firstName!}
-            width={110}
-            height={110}
+            width={90}
+            height={90}
+            className="rounded-full"
           />
           <div className="flex flex-col gap-2">
             <h1 className="font-bold text-2xl">
@@ -41,60 +42,78 @@ const Profile = async () => {
             </p>
           </div>
         </div>
-        <div className="flex gap-4">
-          <div className="border border-black rouded-lg p-3 gap-2 flex flex-col h-fit">
+
+        <div className="flex gap-4 max-sm:w-full max-sm:flex-wrap">
+          <div className="stat-card">
             <div className="flex gap-2 items-center">
-              <Image
-                src="/icons/check.svg"
-                alt="checkmark"
-                width={22}
-                height={22}
-              />
-              <p className="text-2xl font-bold">{sessionHistory.length}</p>
+              <Image src="/icons/check.svg" alt="checkmark" width={20} height={20} />
+              <p className="text-2xl font-bold">{stats.totalSessions}</p>
             </div>
-            <div>Lessons completed</div>
+            <div className="text-sm text-muted-foreground">Lessons completed</div>
           </div>
-          <div className="border border-black rouded-lg p-3 gap-2 flex flex-col h-fit">
+          <div className="stat-card">
             <div className="flex gap-2 items-center">
-              <Image src="/icons/cap.svg" alt="cap" width={22} height={22} />
+              <Image src="/icons/clock.svg" alt="hours" width={20} height={20} />
+              <p className="text-2xl font-bold">{(stats.totalMinutes / 60).toFixed(1)}</p>
+            </div>
+            <div className="text-sm text-muted-foreground">Hours practiced</div>
+          </div>
+          <div className="stat-card">
+            <div className="flex gap-2 items-center">
+              <Image src="/icons/cap.svg" alt="cap" width={20} height={20} />
               <p className="text-2xl font-bold">{companions.length}</p>
             </div>
-            <div>Companions created</div>
+            <div className="text-sm text-muted-foreground">Companions created</div>
+          </div>
+          <div className="stat-card">
+            <div className="flex gap-2 items-center">
+              <span className="text-2xl">🔥</span>
+              <p className="text-2xl font-bold">{stats.streak}</p>
+            </div>
+            <div className="text-sm text-muted-foreground">Day streak</div>
           </div>
         </div>
       </section>
-      <Accordion type="multiple">
-        <AccordionItem value="bookmarks">
-          <AccordionTrigger className="text-2xl font-bold">
-          {/* Bookmarked Companions {`(${bookmarkedCompanions.length})`}  */}
-          </AccordionTrigger>
-          <AccordionContent>
-            <CompanionsList
-              //companions={bookmarkedCompanions}
-              title="Bookmarked Companions"
-            />
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="recent">
-          <AccordionTrigger className="text-2xl font-bold">
-            Recent Sessions
-          </AccordionTrigger>
-          <AccordionContent>
-            <CompanionsList
-              title="Recent Sessions"
-              companions={sessionHistory}
-            />
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="companions">
-          <AccordionTrigger className="text-2xl font-bold">
-            My Companions {`(${companions.length})`}
-          </AccordionTrigger>
-          <AccordionContent>
-            <CompanionsList title="My Companions" companions={companions} />
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+
+      <section className="flex flex-col gap-4 w-full max-w-6xl mx-auto">
+        <div className="chart-card w-full">
+          <h2 className="font-bold text-xl">Activity — last 14 days</h2>
+          <ActivityChart activity={stats.activity} />
+        </div>
+        <div className="chart-card w-full">
+          <h2 className="font-bold text-xl">Sessions by subject</h2>
+          {stats.subjectBreakdown.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Complete a session to see your subject breakdown here.
+            </p>
+          ) : (
+            <SubjectChart breakdown={stats.subjectBreakdown} />
+          )}
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="font-bold text-2xl">
+          My Companions {`(${companions.length})`}
+        </h2>
+        {companions.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            You haven&apos;t created a companion yet.
+          </p>
+        ) : (
+          <div className="companions-grid">
+            {companions.map((companion) => (
+              <CompanionCard
+                key={companion.id}
+                {...companion}
+                color={getSubjectColor(companion.subject)}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <CompanionsList title="Recent Sessions" companions={sessionHistory} />
     </main>
   );
 };

@@ -29,6 +29,7 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
     const [messages, setMessages] = useState<SavedMessage[]>([]);
 
     const lottieRef = useRef<LottieRefCurrentProps>(null);
+    const transcriptRef = useRef<HTMLDivElement>(null);
     
     /**//////////////////////////---------Experimental---------////////////////////////// */
                                      
@@ -46,6 +47,10 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
     }, [isSpeaking, lottieRef])
 
     useEffect(() => {
+        transcriptRef.current?.scrollTo({ top: transcriptRef.current.scrollHeight, behavior: 'smooth' });
+    }, [messages])
+
+    useEffect(() => {
         const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
 
         const onCallEnd = () => {
@@ -56,7 +61,7 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
         const onMessage = (message: Message) => {
             if(message.type === 'transcript' && message.transcriptType === 'final') {
                 const newMessage= { role: message.role, content: message.transcript}
-                setMessages((prev) => [newMessage, ...prev])
+                setMessages((prev) => [...prev, newMessage])
             }
         }
 
@@ -163,7 +168,7 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
             </section>
 
             <section className="transcript">
-                <div className="transcript-message no-scrollbar">
+                <div ref={transcriptRef} className="transcript-message no-scrollbar">
                     {messages.map((message, index) => {
                         if(message.role === 'assistant') {
                             return (
@@ -171,7 +176,7 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
                                     {
                                         name
                                             .split(' ')[0]
-                                            .replace('/[.,]/g, ','')
+                                            .replace(/[.,]/g, '')
                                     }: {message.content}
                                 </p>
                             )

@@ -156,16 +156,25 @@ body {
     @apply flex gap-4 justify-between items-start w-full max-lg:flex-col-reverse max-lg:items-center;
   }
   .companions-grid {
-    @apply flex flex-wrap gap-4 w-full max-md:justify-center;
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full;
   }
   .companion-card {
-    @apply flex flex-col rounded-4xl border border-black px-4 py-4 gap-5 w-full min-lg:max-w-[410px] justify-between;
+    @apply flex flex-col rounded-4xl border border-black px-4 py-4 gap-5 w-full justify-between;
   }
   .subject-badge {
     @apply bg-black text-white rounded-4xl text-sm px-2 py-1 capitalize;
   }
   .companion-bookmark {
     @apply px-2 bg-black rounded-4xl flex items-center h-full aspect-square cursor-pointer;
+  }
+  .rating-badge {
+    @apply bg-cta-gold text-black rounded-4xl text-sm px-2 py-1 font-semibold;
+  }
+  .stat-card {
+    @apply border border-black rounded-2xl p-4 gap-2 flex flex-col flex-1 min-w-[140px];
+  }
+  .chart-card {
+    @apply border border-black rounded-2xl p-4 gap-4 flex flex-col flex-1;
   }
   .input {
     @apply border-input bg-input focus-visible:ring-0 focus-visible:border-input w-full;
