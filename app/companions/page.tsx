@@ -22,7 +22,7 @@ const CompanionsLibrary = async  ({searchParams}:SearchParams ) => {
     const subject = filters.subject ? filters.subject : '';
     const topic = filters.topic ? filters.topic : '';
 
-    const companions = await getAllCompanions({ subject, topic });
+    const companions = await getAllCompanions({ subject, topic, author: user.id });
     //console.log(companions);43
   
   return (

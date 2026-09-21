@@ -18,10 +18,14 @@ export const createCompanion = async (formData: CreateCompanion) => {
     return data[0];
 }
 
-export const getAllCompanions = async ({ limit = 10, page = 1, subject, topic }: GetAllCompanions) => {
+export const getAllCompanions = async ({ limit = 10, page = 1, subject, topic, author }: GetAllCompanions) => {
     const supabase = createSupabaseClient();
 
     let query = supabase.from('companions').select();
+
+    if(author) {
+        query = query.eq('author', author);
+    }
 
     if(subject && topic) {
         query = query.ilike('subject', `%${subject}%`)

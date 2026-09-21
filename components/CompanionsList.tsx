@@ -75,7 +75,6 @@ const CompanionsList = ({title,companions, classNames}:companionsListProps) => {
     
   </TableBody>
 </Table>
-dgfchv
         </article>
   )
 }
